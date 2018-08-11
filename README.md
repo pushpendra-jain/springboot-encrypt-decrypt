@@ -120,7 +120,9 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
 }
 ```
 4. We are now ready to use our **EncryptionAwarePropertyPlaceholderConfigurer**. For this we would just create a static bean of the type.
+
 ```java
+
 @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(ConfigurableEnvironment environment,
                                                                                             EncryptionAwareService encryptionAwareService) {
@@ -131,5 +133,4 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
         return propertySourcesPlaceholderConfigurer;
 
     }
-    ```
-    and that is it. We will now has support for keeping encrypted values in properties file with **PropertSourcesPlaceholderConfigurer**.
+```    
