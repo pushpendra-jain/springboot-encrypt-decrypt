@@ -134,3 +134,6 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
 
     }
 ```    
+and that is it. We wouold now have support for keeping encrypted values in properties file with **PropertSourcesPlaceholderConfigurer**.
+    
+In the example I have encrypted string **"text"** and created **SampleController** to return decrypted string.
