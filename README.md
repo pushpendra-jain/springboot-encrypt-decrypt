@@ -37,7 +37,7 @@ Anywhere I looked to add support for keeping encrypted values are using Property
         };
     }
   ```
-2. Next we need a custom implementation of "PropertySourcesPropertyResolver". In the example its called "EncryptionAwarePropertySourcesPropertyResolver" and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
+2. Next we need a custom implementation of **"PropertySourcesPropertyResolver"**. In the example its called **"EncryptionAwarePropertySourcesPropertyResolver"** and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
   
   ```java
   package com.example.propertySourcesPlaceholderEncrypter.propertyResolvers;
