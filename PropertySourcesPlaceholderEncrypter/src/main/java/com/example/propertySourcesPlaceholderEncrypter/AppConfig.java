@@ -1,6 +1,6 @@
 package com.example.propertySourcesPlaceholderEncrypter;
 
-import com.example.propertySourcesPlaceholderEncrypter.propertyResolvers.EncryptionAwarePropertyPlaceholderConfigurer;
+import com.example.propertySourcesPlaceholderEncrypter.propertyResolvers.EncryptionAwarePropertySourcesPlaceholderConfigurer;
 import com.example.propertySourcesPlaceholderEncrypter.services.EncryptionAwareService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class AppConfig {
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(ConfigurableEnvironment environment,
                                                                                             EncryptionAwareService encryptionAwareService) {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer
-                = new EncryptionAwarePropertyPlaceholderConfigurer(encryptionAwareService);
+                = new EncryptionAwarePropertySourcesPlaceholderConfigurer(encryptionAwareService);
         propertySourcesPlaceholderConfigurer.setEnvironment(environment);
         propertySourcesPlaceholderConfigurer.setPropertySources(environment.getPropertySources());
         return propertySourcesPlaceholderConfigurer;

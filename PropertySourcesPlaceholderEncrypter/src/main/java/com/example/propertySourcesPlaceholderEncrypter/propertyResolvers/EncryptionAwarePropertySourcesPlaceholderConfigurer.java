@@ -8,12 +8,12 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.ConfigurablePropertyResolver;
 import org.springframework.core.env.Environment;
 
-public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
+public class EncryptionAwarePropertySourcesPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
 
     private Environment environment;
     private EncryptionAwareService encryptionAwareService;
 
-    public EncryptionAwarePropertyPlaceholderConfigurer(EncryptionAwareService encryptionAwareService) {
+    public EncryptionAwarePropertySourcesPlaceholderConfigurer(EncryptionAwareService encryptionAwareService) {
         this.encryptionAwareService = encryptionAwareService;
     }
 
