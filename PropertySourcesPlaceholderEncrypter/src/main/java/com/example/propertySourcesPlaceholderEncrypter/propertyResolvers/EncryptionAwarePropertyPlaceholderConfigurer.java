@@ -26,6 +26,6 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
     protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
                                      ConfigurablePropertyResolver propertyResolver) throws BeansException {
         super.processProperties(beanFactoryToProcess,
-                new EncryptionAwarePropertySourcesPlaceholderResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
+                new EncryptionAwarePropertySourcesPropertyResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
     }
 }

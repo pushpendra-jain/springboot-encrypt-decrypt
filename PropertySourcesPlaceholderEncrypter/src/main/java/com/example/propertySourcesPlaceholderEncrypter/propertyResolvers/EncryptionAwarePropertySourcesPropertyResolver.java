@@ -9,13 +9,13 @@ import java.util.Objects;
 /**
  * A custom implementation of {@link PropertySourcesPropertyResolver} which can resolve encrypted properties as well.
  */
-public class EncryptionAwarePropertySourcesPlaceholderResolver extends PropertySourcesPropertyResolver {
+public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySourcesPropertyResolver {
 
     private EncryptionAwareService encryptionAwareService;
 
 
-    public EncryptionAwarePropertySourcesPlaceholderResolver(PropertySources propertySources,
-                                                             EncryptionAwareService encryptionAwareService) {
+    public EncryptionAwarePropertySourcesPropertyResolver(PropertySources propertySources,
+                                                          EncryptionAwareService encryptionAwareService) {
         super(propertySources);
         this.encryptionAwareService = encryptionAwareService;
     }
