@@ -20,6 +20,11 @@ public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySour
         this.encryptionAwareService = encryptionAwareService;
     }
 
+    /**
+     * Overriding method to add support for decrypting the text if it is encrypted.
+     * @param text
+     * @return
+     */
     @Override
     public String resolvePlaceholders(String text) {
         String resolvedText = super.resolvePlaceholders(text);
@@ -28,6 +33,11 @@ public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySour
         return encryptionAwareService.tryDecrypt(resolvedText);
     }
 
+    /**
+     * Overriding method to add support for decrypting the text if it is encrypted.
+     * @param text
+     * @return
+     */
     @Override
     public String resolveRequiredPlaceholders(String text) {
         String resolvedText = super.resolveRequiredPlaceholders(text);
