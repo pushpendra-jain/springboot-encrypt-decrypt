@@ -91,7 +91,7 @@ public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySour
 ```
 See the line **return encryptionAwareService.tryDecrypt(resolvedText);** in both resolve methods where our tryDecrypt method of **EncryptionAwareService** will decrypt the text if need otherwise will return the same text which was passed.
 
-3.Now in next step we will integrate the resolver written in above step. For this we will create our own **EncryptionAwarePropertyPlaceholderConfigurer** by extending **PropertySourcesPlaceholderConfigurer** and overriding its **processProperties** method and passing it our own **EncryptionAwarePropertySourcesPropertyResolver** instead of using its default **PropertySourcesPropertyResolver** (in its 2nd argument). We are not changing any existing functionality because we are just extending and keeping all the same behavior by calling its super first and using result of those to decrypt that is only if needed.
+3.Now in next step we will integrate the resolver written in above step. For this we will create our own **EncryptionAwarePropertySourcesPlaceholderConfigurer** by extending **PropertySourcesPlaceholderConfigurer** and overriding its **processProperties** method and passing it our own **EncryptionAwarePropertySourcesPropertyResolver** instead of using its default **PropertySourcesPropertyResolver** (in its 2nd argument). We are not changing any existing functionality because we are just extending and keeping all the same behavior by calling its super first and using result of those to decrypt that is only if needed.
 
 ```java
 package com.example.propertySourcesPlaceholderEncrypter.propertyResolvers;
@@ -104,12 +104,12 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.ConfigurablePropertyResolver;
 import org.springframework.core.env.Environment;
 
-public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
+public class EncryptionAwarePropertySourcesPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
 
     private Environment environment;
     private EncryptionAwareService encryptionAwareService;
 
-    public EncryptionAwarePropertyPlaceholderConfigurer(EncryptionAwareService encryptionAwareService) {
+    public EncryptionAwarePropertySourcesPlaceholderConfigurer(EncryptionAwareService encryptionAwareService) {
         this.encryptionAwareService = encryptionAwareService;
     }
 
@@ -125,7 +125,6 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
                 new EncryptionAwarePropertySourcesPropertyResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
     }
 }
-
 ```
 4.We are now ready to use our **EncryptionAwarePropertyPlaceholderConfigurer**. For this we would just create a static bean of the type.
 ```java
@@ -133,7 +132,7 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(ConfigurableEnvironment environment,
                                                                                             EncryptionAwareService encryptionAwareService) {
         PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer
-                = new EncryptionAwarePropertyPlaceholderConfigurer(encryptionAwareService);
+                = new EncryptionAwarePropertySourcesPlaceholderConfigurer(encryptionAwareService);
         propertySourcesPlaceholderConfigurer.setEnvironment(environment);
         propertySourcesPlaceholderConfigurer.setPropertySources(environment.getPropertySources());
         return propertySourcesPlaceholderConfigurer;
