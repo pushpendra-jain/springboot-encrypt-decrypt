@@ -37,6 +37,7 @@ Anywhere I looked to add support for keeping encrypted values are using Property
         };
     }
   ```
+
 2. Next we need a custom implementation of **"PropertySourcesPropertyResolver"**. In the example its called **"EncryptionAwarePropertySourcesPropertyResolver"** and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
   
   ```java
@@ -89,7 +90,6 @@ public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySour
     }
 }
 ```
-  
 See the line **return encryptionAwareService.tryDecrypt(resolvedText);** in both resolve methods where our tryDecrypt method of **EncryptionAwareService** will decrypt the text if need otherwise will return the same text which was passed.
 
 3. Now in next step we will integrate the resolver written in above step. For this we will create our own **EncryptionAwarePropertyPlaceholderConfigurer** by extending **PropertySourcesPlaceholderConfigurer** and overriding its **processProperties** method and passing it our own **EncryptionAwarePropertySourcesPropertyResolver** instead of using its default **PropertySourcesPropertyResolver** (in its 2nd argument). We are not changing any existing functionality because we are just extending and keeping all the same behavior by calling its super first and using result of those to decrypt that is only if needed.
