@@ -8,7 +8,8 @@ Anywhere I looked to add support for keeping encrypted values are using Property
 
 ```java
  /**
-     * This is just a demo impl of the bean. Write your own implementation of {@link EncryptionAwareService} and return that service as bean here.
+     * This is just a demo impl of the bean. Write your own implementation of {@link EncryptionAwareService} 
+     * and return that service as bean here.
      *
      * @return
      */
@@ -36,20 +37,27 @@ Anywhere I looked to add support for keeping encrypted values are using Property
         };
     }
   ```
-  
-  2. Next we need a custom implementation of "PropertySourcesPropertyResolver". In the example its called "EncryptionAwarePropertySourcesPlaceholderResolver" and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
+2. Next we need a custom implementation of "PropertySourcesPropertyResolver". In the example its called "EncryptionAwarePropertySourcesPropertyResolver" and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
   
   ```java
-  /**
+  package com.example.propertySourcesPlaceholderEncrypter.propertyResolvers;
+
+import com.example.propertySourcesPlaceholderEncrypter.services.EncryptionAwareService;
+import org.springframework.core.env.PropertySources;
+import org.springframework.core.env.PropertySourcesPropertyResolver;
+
+import java.util.Objects;
+
+/**
  * A custom implementation of {@link PropertySourcesPropertyResolver} which can resolve encrypted properties as well.
  */
-    public class EncryptionAwarePropertySourcesPlaceholderResolver extends PropertySourcesPropertyResolver {
+public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySourcesPropertyResolver {
 
     private EncryptionAwareService encryptionAwareService;
 
 
-    public EncryptionAwarePropertySourcesPlaceholderResolver(PropertySources propertySources,
-                                                             EncryptionAwareService encryptionAwareService) {
+    public EncryptionAwarePropertySourcesPropertyResolver(PropertySources propertySources,
+                                                          EncryptionAwareService encryptionAwareService) {
         super(propertySources);
         this.encryptionAwareService = encryptionAwareService;
     }
@@ -84,7 +92,7 @@ Anywhere I looked to add support for keeping encrypted values are using Property
   
 See the line **return encryptionAwareService.tryDecrypt(resolvedText);** in both resolve methods where our tryDecrypt method of **EncryptionAwareService** will decrypt the text if need otherwise will return the same text which was passed.
 
-3. Now in next step we will integrate the resolver written in above step. For this we will create our own **EncryptionAwarePropertyPlaceholderConfigurer** by extending **PropertySourcesPlaceholderConfigurer** and overriding its **processProperties** method and passing it our own **EncryptionAwarePropertySourcesPlaceholderResolver** instead of using its default **PropertySourcesPlaceholderConfigurer** (in its 2nd argument). We are not changing any existing functionality because we are just extending and keeping all the same behavior by calling its super first and using result of those to decrypt that is only if needed.
+3. Now in next step we will integrate the resolver written in above step. For this we will create our own **EncryptionAwarePropertyPlaceholderConfigurer** by extending **PropertySourcesPlaceholderConfigurer** and overriding its **processProperties** method and passing it our own **EncryptionAwarePropertySourcesPropertyResolver** instead of using its default **PropertySourcesPropertyResolver** (in its 2nd argument). We are not changing any existing functionality because we are just extending and keeping all the same behavior by calling its super first and using result of those to decrypt that is only if needed.
 
 ```java
 package com.example.propertySourcesPlaceholderEncrypter.propertyResolvers;
@@ -115,9 +123,10 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
     protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
                                      ConfigurablePropertyResolver propertyResolver) throws BeansException {
         super.processProperties(beanFactoryToProcess,
-                new EncryptionAwarePropertySourcesPlaceholderResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
+                new EncryptionAwarePropertySourcesPropertyResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
     }
 }
+
 ```
 4. We are now ready to use our **EncryptionAwarePropertyPlaceholderConfigurer**. For this we would just create a static bean of the type.
 
