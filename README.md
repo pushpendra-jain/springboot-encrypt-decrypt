@@ -7,28 +7,58 @@ Anywhere I looked to add support for keeping encrypted values are using Property
 1. First we need some class which we will use to do the Decryption. In the example we will write an implementation of EncryptionAwareService and create an static bean of the type.
 
 ```java
- package com.example.propertySourcesPlaceholderEncrypter.propertyResolvers;
+ /**
+     * This is just a demo impl of the bean. Write your own implementation of {@link EncryptionAwareService} and return that service as bean here.
+     *
+     * @return
+     */
+    @Bean
+    public static EncryptionAwareService encryptionAwareService(Environment environment) {
+        return new EncryptionAwareService() {
+            @Override
+            public String tryDecrypt(String text) {
+                if (canTxtDecrypted(text)) {
+                    TextEncryptor encryptor = Encryptors.queryableText(environment.getProperty("app.somePassword"),
+                            environment.getProperty("app.someSalt"));
+                    return encryptor.decrypt(text.split(environment.getProperty(APP_SOME_ENC_PWD_PREFIX))[1]);
 
-import com.example.propertySourcesPlaceholderEncrypter.services.EncryptionAwareService;
-import org.springframework.core.env.PropertySources;
-import org.springframework.core.env.PropertySourcesPropertyResolver;
+                }
 
-import java.util.Objects;
+                return text;
 
-/**
+            }
+            // Whatever logic  you need to put to identify encrypted string
+            @Override
+            public boolean canTxtDecrypted(String text) {
+                return StringUtils.hasText(environment.getProperty(APP_SOME_ENC_PWD_PREFIX))
+                        && text.startsWith(environment.getProperty(APP_SOME_ENC_PWD_PREFIX));
+            }
+        };
+    }
+  ```
+  
+  2. Next we need a custom implementation of "PropertySourcesPropertyResolver". In the example its called "EncryptionAwarePropertySourcesPlaceholderResolver" and override its two methods and that is where we will do the magic of decrypting the encrypted values if needed. We will inject our EncryptionAwareService to do so.
+  
+  ```java
+  /**
  * A custom implementation of {@link PropertySourcesPropertyResolver} which can resolve encrypted properties as well.
  */
-public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySourcesPropertyResolver {
+    public class EncryptionAwarePropertySourcesPlaceholderResolver extends PropertySourcesPropertyResolver {
 
     private EncryptionAwareService encryptionAwareService;
 
 
-    public EncryptionAwarePropertySourcesPropertyResolver(PropertySources propertySources,
-                                                          EncryptionAwareService encryptionAwareService) {
+    public EncryptionAwarePropertySourcesPlaceholderResolver(PropertySources propertySources,
+                                                             EncryptionAwareService encryptionAwareService) {
         super(propertySources);
         this.encryptionAwareService = encryptionAwareService;
     }
 
+    /**
+     * Overriding method to add support for decrypting the text if it is encrypted.
+     * @param text
+     * @return
+     */
     @Override
     public String resolvePlaceholders(String text) {
         String resolvedText = super.resolvePlaceholders(text);
@@ -37,6 +67,11 @@ public class EncryptionAwarePropertySourcesPropertyResolver extends PropertySour
         return encryptionAwareService.tryDecrypt(resolvedText);
     }
 
+    /**
+     * Overriding method to add support for decrypting the text if it is encrypted.
+     * @param text
+     * @return
+     */
     @Override
     public String resolveRequiredPlaceholders(String text) {
         String resolvedText = super.resolveRequiredPlaceholders(text);
@@ -80,7 +115,7 @@ public class EncryptionAwarePropertyPlaceholderConfigurer extends PropertySource
     protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess,
                                      ConfigurablePropertyResolver propertyResolver) throws BeansException {
         super.processProperties(beanFactoryToProcess,
-                new EncryptionAwarePropertySourcesPropertyResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
+                new EncryptionAwarePropertySourcesPlaceholderResolver(((ConfigurableEnvironment) environment).getPropertySources(), encryptionAwareService));
     }
 }
 ```
