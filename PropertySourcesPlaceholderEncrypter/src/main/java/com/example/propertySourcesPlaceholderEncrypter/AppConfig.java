@@ -51,7 +51,8 @@ public class AppConfig {
             @Override
             public boolean canTxtDecrypted(String text) {
                 return StringUtils.hasText(environment.getProperty(APP_SOME_ENC_PWD_PREFIX))
-                        && text.startsWith(environment.getProperty(APP_SOME_ENC_PWD_PREFIX));
+                        && text.startsWith(environment.getProperty(APP_SOME_ENC_PWD_PREFIX))
+                        && !text.endsWith(environment.getProperty(APP_SOME_ENC_PWD_PREFIX));
             }
         };
     }
