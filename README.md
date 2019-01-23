@@ -1,4 +1,4 @@
-# spring-examples
+# PropertySourcesPlaceholderEncrypter spring-boot example
 
 [PropertySourcesPlaceholderEncrypter](https://github.com/pushpendra-jain/spring-examples/tree/master/PropertySourcesPlaceholderEncrypter) is an easiest example I could write to add support for using encrypted values as properties and resolve and decrypt those on the fly.
 
